@@ -51,22 +51,9 @@ reply_with_logoutresp(SP, IDP, Status, RelayState, Req) ->
 
 %% @private
 reply_with_req(IDP, SignedXml, RelayState, Req) ->
-    Target = esaml_binding:encode_http_redirect(IDP, SignedXml, RelayState),
-    {UA, _} = cowboy_req:header(<<"user-agent">>, Req, <<"">>),
-    IsIE = not (binary:match(UA, <<"MSIE">>) =:= nomatch),
-    if IsIE andalso (byte_size(Target) > 2042) ->
-        Html = esaml_binding:encode_http_post(IDP, SignedXml, RelayState),
-        cowboy_req:reply(200, [
-            {<<"Cache-Control">>, <<"no-cache">>},
-            {<<"Pragma">>, <<"no-cache">>}
-        ], Html, Req);
-    true ->
-        cowboy_req:reply(302, [
-            {<<"Cache-Control">>, <<"no-cache">>},
-            {<<"Pragma">>, <<"no-cache">>},
-            {<<"Location">>, Target}
-        ], <<"Redirecting...">>, Req)
-    end.
+    Html = esaml_binding:encode_http_post(IDP, SignedXml, RelayState),
+    cowboy_req:reply(200, [ {<<"Cache-Control">>, <<"no-cache">>},
+                           {<<"Pragma">>, <<"no-cache">>} ], Html, Req).
 
 %% @doc Validate and parse a LogoutRequest or LogoutResponse
 %%

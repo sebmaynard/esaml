@@ -142,7 +142,7 @@ common_attrib_map(Other) -> list_to_atom(Other).
 -define(xpath_attr_required(XPath, Record, Field, Error),
     fun(Resp) ->
         case xmerl_xpath:string(XPath, Xml, [{namespace, Ns}]) of
-            [#xmlAttribute{value = V}] -> Resp#Record{Field = V};
+            [#xmlAttribute{value = V} | _] -> Resp#Record{Field = V};
             _ -> {error, Error}
         end
     end).

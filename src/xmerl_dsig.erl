@@ -46,7 +46,7 @@ strip(#xmlElement{content = Kids} = Elem) ->
 %%      the element with the signature added.
 %%
 %% Don't use "ds" as a namespace prefix in the envelope document, or things will go baaaad.
--spec sign(Element :: #xmlElement{}, PrivateKey :: rsa_private_key(), CertBin :: binary()) -> #xmlElement{}.
+-spec sign(Element :: #xmlElement{}, PrivateKey :: public_key:rsa_private_key(), CertBin :: binary()) -> #xmlElement{}.
 sign(ElementIn, PrivateKey, CertBin) ->
     % get rid of any previous signature
     ElementStrip = strip(ElementIn),
@@ -58,7 +58,7 @@ sign(ElementIn, PrivateKey, CertBin) ->
             case lists:keyfind('id', 2, ElementStrip#xmlElement.attributes) of
                 #xmlAttribute{value = LowId} -> {ElementStrip, LowId};
                 _ ->
-                    NewId = uuid:to_string(uuid:uuid1()),
+                    NewId = uuid:uuid_to_string(uuid:get_v4()),
                     Attr = #xmlAttribute{name = 'ID', value = NewId, namespace = #xmlNamespace{}},
                     NewAttrs = [Attr | ElementStrip#xmlElement.attributes],
                     Elem = ElementStrip#xmlElement{attributes = NewAttrs},
@@ -194,6 +194,8 @@ verify(Element, Fingerprints) ->
                     any ->
                         ok;
                     _ ->
+                        lager:debug("CertHash: ~p", [CertHash]),
+                        lager:debug("Fingerprints: ~p", [Fingerprints]),
                         case lists:member(CertHash, Fingerprints) of
                             true ->
                                 ok;
