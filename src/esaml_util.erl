@@ -117,7 +117,7 @@ ets_table_owner() ->
     end.
 
 %% @doc Loads a private key from a file on disk (or ETS memory cache)
--spec load_private_key(Path :: string()) -> #'RSAPrivateKey'{}.
+-spec load_private_key(Path :: string()) -> term().
 load_private_key(Path) ->
     case ets:lookup(esaml_privkey_cache, Path) of
         [{_, Key}] -> Key;

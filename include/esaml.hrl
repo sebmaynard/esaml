@@ -87,7 +87,7 @@
 -record(esaml_sp, {
 	org = #esaml_org{} :: esaml:org(),
 	tech = #esaml_contact{} :: esaml:contact(),
-	key :: binary() | undefined,
+	key :: term() | undefined,
 	certificate :: binary() | undefined,
 	sp_sign_requests = false :: boolean(),
 	idp_signs_assertions = true :: boolean(),

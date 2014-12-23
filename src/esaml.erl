@@ -445,7 +445,8 @@ lang_elems(BaseTag, Val) ->
 
 %% @doc Convert a SAML request/metadata record into XML
 %% @private
--spec to_xml(record()) -> #xmlElement{}.
+-spec to_xml(#esaml_authnreq{} | #esaml_logoutreq{} |
+             #esaml_logoutresp{} | #esaml_sp_metadata{}) -> #xmlElement{}.
 to_xml(#esaml_authnreq{version = V, issue_instant = Time, destination = Dest, issuer = Issuer, consumer_location = Consumer}) ->
     Ns = #xmlNamespace{nodes = [{"samlp", 'urn:oasis:names:tc:SAML:2.0:protocol'},
                                 {"saml", 'urn:oasis:names:tc:SAML:2.0:assertion'}]},
